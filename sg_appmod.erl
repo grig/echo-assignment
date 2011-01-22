@@ -4,11 +4,11 @@
 
 out(A) ->
     case A#arg.appmoddata of
-        "put" -> put(A);
-        _      -> not_found()
+        "put" -> handle_put(A);
+        _     -> handle_not_found()
     end.
 
-put(A) ->
+handle_put(A) ->
     case decode_input(A#arg.clidata) of
         {ok, Val} -> [{status, 204}];
         _         -> [{status, 400}]
@@ -22,15 +22,6 @@ decode_input(Data) ->
         error:badarg -> error
     end.
 
-info(A) ->
-    [{ehtml,
-      [{p, [], {pre, [], io_lib:format("A#arg.appmoddata = ~p~n"
-                                       "A#arg.appmod_prepath = ~p~n"
-                                       "A#arg.querydata = ~p~n",
-                                       [A#arg.appmoddata,
-                                        A#arg.appmod_prepath,
-                                        A#arg.querydata])}}]}].
-
-not_found() ->
+handle_not_found() ->
     [{status, 404},
      {html, "Not Found"}].
