@@ -15,3 +15,6 @@ Feature: putting a number
     When I post string "foo" as "text/plain" to "/put"
     Then I should receive HTTP status line "400 Bad Request"
 
+  Scenario: sending improper HTTP content-type
+    When I post string "1" as "application/foo" to "/put"
+    Then I should receive HTTP status line "400 Bad Request"

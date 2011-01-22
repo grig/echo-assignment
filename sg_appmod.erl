@@ -9,10 +9,21 @@ out(A) ->
     end.
 
 handle_put(A) ->
-    case decode_input(A#arg.clidata) of
-        {ok, Val} -> [{status, 204}];
-        _         -> [{status, 400}]
+    case decode_request(A) of
+        {ok, _Val} -> [{status, 204}];
+        _          -> [{status, 400}]
     end.
+
+decode_request(A) ->
+    case content_type(A) of
+        "text/plain" ->
+             decode_input(A#arg.clidata);
+        _ -> error
+    end.
+
+content_type(A) ->
+    Headers = A#arg.headers,
+    Headers#headers.content_type.
 
 % @spec decode_input(binary()) -> {ok, integer()} | error.
 decode_input(Data) ->
