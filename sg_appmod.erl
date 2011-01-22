@@ -9,7 +9,18 @@ out(A) ->
     end.
 
 put(A) ->
-    [{status, 204}].
+    case decode_input(A#arg.clidata) of
+        {ok, Val} -> [{status, 204}];
+        _         -> [{status, 400}]
+    end.
+
+% @spec decode_input(binary()) -> {ok, integer()} | error.
+decode_input(Data) ->
+    try list_to_integer(binary_to_list(Data)) of
+        Val -> {ok, Val}
+    catch
+        error:badarg -> error
+    end.
 
 info(A) ->
     [{ehtml,

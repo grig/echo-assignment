@@ -2,7 +2,7 @@ require 'net/http'
 require 'test/unit'
 include Test::Unit::Assertions
 
-When /^I post number "([^"]*)" as "([^"]*)" to "([^"]*)"$/ do |number, content_type, path|
+When /^I post string "([^"]*)" as "([^"]*)" to "([^"]*)"$/ do |number, content_type, path|
   req = Net::HTTP::Post.new(path)
   req.body = number
   req['Content-Type'] = content_type
