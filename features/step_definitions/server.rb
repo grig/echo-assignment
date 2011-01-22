@@ -11,6 +11,12 @@ When /^I post string "([^"]*)" as "([^"]*)" to "([^"]*)"$/ do |number, content_t
   end
 end
 
+When /^I send a GET request to "([^"]*)"$/ do |path|
+  Net::HTTP.start('localhost', 8081) do |http|
+    @response = http.get(path)
+  end
+end
+
 Then /^I should receive HTTP status line "([^"]*)"$/ do |status_line|
   assert_equal status_line, "#{@response.code} #{@response.message}"
 end

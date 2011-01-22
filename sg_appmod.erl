@@ -5,6 +5,7 @@
 out(A) ->
     case A#arg.appmoddata of
         "put" -> handle_put(A);
+        "get" -> handle_get(A);
         _     -> handle_not_found()
     end.
 
@@ -32,6 +33,10 @@ decode_input(Data) ->
     catch
         error:badarg -> error
     end.
+
+handle_get(A) ->
+    [{status, 200},
+     {html, "ok"}].
 
 handle_not_found() ->
     [{status, 404},
