@@ -2,8 +2,8 @@ require 'net/http'
 require 'test/unit'
 include Test::Unit::Assertions
 
-When /^I post number "([^"]*)" as "([^"]*)"$/ do |number, content_type|
-  req = Net::HTTP::Post.new('/put')
+When /^I post number "([^"]*)" as "([^"]*)" to "([^"]*)"$/ do |number, content_type, path|
+  req = Net::HTTP::Post.new(path)
   req.body = number
   req['Content-Type'] = content_type
   Net::HTTP.start('localhost', 8081) do |http|
