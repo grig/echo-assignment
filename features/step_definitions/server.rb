@@ -21,3 +21,7 @@ Then /^I should receive HTTP status line "([^"]*)"$/ do |status_line|
   assert_equal status_line, "#{@response.code} #{@response.message}"
 end
 
+Then /^response body should look like the following:$/ do |expected|
+  assert_equal expected, @response.body
+end
+

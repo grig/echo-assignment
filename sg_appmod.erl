@@ -36,7 +36,7 @@ decode_input(Data) ->
 
 handle_get(A) ->
     [{status, 200},
-     {html, "ok"}].
+     {html, "[[1]]"}].
 
 handle_not_found() ->
     [{status, 404},
