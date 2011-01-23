@@ -13,3 +13,12 @@ Feature: getting lists of sequences
       """
       [[1]]
       """
+
+  Scenario: get with a previous multiple puts
+    Given I post string "1" as "text/plain" to "/put"
+    Given I post string "2" as "text/plain" to "/put"
+    When I send a GET request to "/get"
+    Then response body should look like the following:
+      """
+      [[1,2]]
+      """
