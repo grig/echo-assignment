@@ -1,7 +1,7 @@
-system("/Users/grig/local/yaws/bin/yaws --daemon")
+#system("/Users/grig/local/yaws/bin/yaws --daemon")
 puts "starting yaws"
-sleep 1
+#sleep 1
 
 at_exit do
-  system("/Users/grig/local/yaws/bin/yaws --stop")
+#  system("/Users/grig/local/yaws/bin/yaws --stop")
 end
