@@ -2,20 +2,8 @@
 -compile(export_all).
 
 start() ->
-    yaws:start_embedded("/Users/grig/Projects/echo-generators/",
-                        [{port, 8081},
-                         {listen, {0, 0, 0, 0}},
-                         {appmods, [{"/", sg_appmod}]}]),
     SS = spawn(?MODULE, loop, [[]]),
     register(sequence_server, SS).
-
-stop() ->
-    yaws:stop(),
-    Pid = whereis(sequence_server),
-    Pid ! { self(), stop },
-    receive
-        { Pid, Reply } -> Reply
-    end.
 
 loop(L) ->
     receive
@@ -28,6 +16,9 @@ loop(L) ->
             Pid ! {self(), L},
             loop(L)
     end.
+
+stop() ->
+    rpc(whereis(sequence_server), stop).
 
 register(Val) ->
     rpc(whereis(sequence_server), {register, Val}).
