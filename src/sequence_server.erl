@@ -29,16 +29,14 @@ loop(L) ->
             loop(L)
     end.
 
-%% register(Num) ->
-%%     sequence_server ! { self(), {register, Num} },
-%%     Pid = whereis(sequence_server),
-%%     receive
-%%         { Pid, Val } -> Val
-%%     end.
+register(Val) ->
+    rpc(whereis(sequence_server), {register, Val}).
 
-%% get() ->
-%%     sequence_server ! { self(), get},
-%%     Pid = whereis(sequence_server),
-%%     receive
-%%         { Pid, Val } -> Val
-%%     end.
+get() ->
+    rpc(whereis(sequence_server), get).
+
+rpc(Pid, Q) ->
+    Pid ! { self(), Q },
+    receive
+        { Pid, Val } -> Val
+    end.
