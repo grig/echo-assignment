@@ -7,7 +7,8 @@ put_test_() ->
      fun cleanup/1,
      [{"should register value", fun should_register_value/0},
       fun should_return_empty_list_on_empty_sequence/0,
-      fun should_return_single_element/0
+      fun should_return_single_element/0,
+      fun should_return_sequential_elements/0
      ]}.
 
 setup() ->
@@ -25,3 +26,8 @@ should_return_empty_list_on_empty_sequence() ->
 should_return_single_element() ->
     sequence_server:register(1),
     ?assertEqual([1], sequence_server:get()).
+
+should_return_sequential_elements() ->
+    sequence_server:register(1),
+    sequence_server:register(2),
+    ?assertEqual([1,2], sequence_server:get()).

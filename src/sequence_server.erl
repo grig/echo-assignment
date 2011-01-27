@@ -13,7 +13,7 @@ loop(L) ->
             Pid ! {self(), ok},
             loop([Num | L]);
         {Pid, get} ->
-            Pid ! {self(), L},
+            Pid ! {self(), lists:reverse(L)},
             loop(L)
     end.
 
