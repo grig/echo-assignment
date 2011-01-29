@@ -6,20 +6,17 @@
         ?assertEqual(List, sequence:to_list(Seq))).
 
 new_seq_should_be_empty_test() ->
-    S = seq_from_list([]),
-    ?assertSeqEqual([], S).
+    ?assertSeqEqual([], seq([])).
 
 insert_of_element_into_empty_seq_should_increment_length_test() ->
-    S = seq_from_list([1]),
-    ?assertSeqEqual([1], S).
+    ?assertSeqEqual([1], seq([1])).
 
 insert_of_larger_element_should_increase_sequence_test() ->
-    S = seq_from_list([1,2,3]),
-    ?assertSeqEqual([1,2,3], S).
+    ?assertSeqEqual([1,2,3], seq([1,2,3])).
 
 insert_of_smaller_element_should_reset_sequence_test() ->
-    S = seq_from_list([2,1,2]),
-    ?assertSeqEqual([1,2], S).
+    ?assertSeqEqual([1,2], seq([2,1,2])).
 
-seq_from_list(L) ->
+% inserts elements of L into an empty sequence and returns resulting sequence
+seq(L) ->
     lists:foldl(fun sequence:insert/2, sequence:new(), L).
