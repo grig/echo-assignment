@@ -5,17 +5,18 @@
         ?assertEqual(length(List), sequence:length(Seq)),
         ?assertEqual(List, sequence:to_list(Seq))).
 
-new_seq_should_be_empty_test() ->
-    ?assertSeqEqual([], seq([])).
+-define(assertSeqEqual_(List, Seq),
+        fun() -> ?assertSeqEqual(List, Seq) end).
 
-insert_of_element_into_empty_seq_should_increment_length_test() ->
-    ?assertSeqEqual([1], seq([1])).
-
-insert_of_larger_element_should_increase_sequence_test() ->
-    ?assertSeqEqual([1,2,3], seq([1,2,3])).
-
-insert_of_smaller_element_should_reset_sequence_test() ->
-    ?assertSeqEqual([1,2], seq([2,1,2])).
+sequence_test_() ->
+    [{"new seq should be empty",
+      ?assertSeqEqual_([], seq([]))},
+     {"insert of element into empty seq should increment seq",
+      ?assertSeqEqual_([1], seq([1]))},
+     {"insert of larger element should increase seq",
+      ?assertSeqEqual_([1,2,3], seq([1,2,3]))},
+     {"insert of smaller element should reset seq",
+      ?assertSeqEqual_([1,2], seq([2,1,2]))}].
 
 % inserts elements of L into an empty sequence and returns resulting sequence
 seq(L) ->
