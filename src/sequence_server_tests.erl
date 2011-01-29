@@ -10,7 +10,8 @@ put_test_() ->
       fun should_return_single_element/0,
       fun should_return_sequential_elements/0,
       fun should_reset_sequence_for_out_of_order_elements/0,
-      fun should_return_largest_sequence_so_far/0
+      fun should_return_largest_sequence_so_far/0,
+      sequence
      ]}.
 
 setup() ->
