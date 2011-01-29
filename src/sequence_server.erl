@@ -23,14 +23,24 @@ get() ->
 
 % gen_server callbacks
 init(_Arg) ->
-    {ok, []}.
+    {ok, {[], []}}.
 
-handle_call({register, Num}, _From, Seq) ->
-    {reply, ok, update_sequence(Num, Seq)};
-handle_call(get, _From, Seq) ->
-    {reply, lists:reverse(Seq), Seq};
+handle_call({register, Num}, _From, { Longest, Current }) ->
+    {reply, ok, update_state(Num, {Longest, Current})};
+handle_call(get, _From, State = { Longest, Current }) ->
+    {reply, lists:reverse(Longest), State};
 handle_call(stop, _From, State) ->
     {stop, normal, ok, State}.
+
+update_state(Num, {Longest, Current}) ->
+    Current1 = update_sequence(Num, Current),
+    Longest1 = case sequence_length(Longest) =< sequence_length(Current1) of
+                   true -> Current1;
+                   _ -> Longest
+               end,
+    {Longest1, Current1}.
+
+sequence_length(Seq) -> length(Seq).
 
 update_sequence(Num, []) -> [Num];
 update_sequence(Num, L = [H|_T]) when Num > H -> [Num | L];
