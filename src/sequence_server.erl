@@ -25,26 +25,23 @@ get() ->
 init(_Arg) ->
     {ok, []}.
 
-handle_call(Request, _From, Seq) ->
-    case Request of
-        {register, Num} ->
-            {reply, ok, update_sequence(Num, Seq)};
-        get ->
-            {reply, lists:reverse(Seq), Seq};
-        stop ->
-            {stop, normal, ok, Seq}
-    end.
+handle_call({register, Num}, _From, Seq) ->
+    {reply, ok, update_sequence(Num, Seq)};
+handle_call(get, _From, Seq) ->
+    {reply, lists:reverse(Seq), Seq};
+handle_call(stop, _From, State) ->
+    {stop, normal, ok, State}.
 
 update_sequence(Num, []) -> [Num];
 update_sequence(Num, L = [H|_T]) when Num > H -> [Num | L];
 update_sequence(Num, [H|_T]) when Num =< H -> [Num].
 
-handle_cast(_Request, Seq) ->
-    {noreply, Seq}.
+handle_cast(_Request, State) ->
+    {noreply, State}.
 
-handle_info(_Info, Seq) ->
-    {noreply, Seq}.
+handle_info(_Info, State) ->
+    {noreply, State}.
 
-terminate(_Reason, _Seq) -> ok.
+terminate(_Reason, _State) -> ok.
 
-code_change(_OldVsn, Seq, _Extra) -> {ok, Seq}.
+code_change(_OldVsn, State, _Extra) -> {ok, State}.
