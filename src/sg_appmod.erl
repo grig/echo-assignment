@@ -11,7 +11,9 @@ out(A) ->
 
 handle_put(A) ->
     case decode_request(A) of
-        {ok, _Val} -> [{status, 204}];
+        {ok, _Val} ->
+            sequence_server:register(_Val),
+            [{status, 204}];
         _          -> [{status, 400}]
     end.
 
@@ -26,7 +28,7 @@ content_type(A) ->
     Headers = A#arg.headers,
     Headers#headers.content_type.
 
-% @spec decode_input(binary()) -> {ok, integer()} | error.
+-spec decode_input(binary()) -> {ok, integer()} | error.
 decode_input(Data) ->
     try list_to_integer(binary_to_list(Data)) of
         Val -> {ok, Val}
@@ -34,9 +36,10 @@ decode_input(Data) ->
         error:badarg -> error
     end.
 
-handle_get(A) ->
+handle_get(_A) ->
     [{status, 200},
-     {html, "[[1]]"}].
+     {html,
+      io_lib:format("[~p]", [sequence_server:get()])}].
 
 handle_not_found() ->
     [{status, 404},
