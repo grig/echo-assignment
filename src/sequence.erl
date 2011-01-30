@@ -6,6 +6,7 @@
 -spec(new() -> seq()).
 new() -> [].
 
+%% TODO: cache sequence length in a tuple
 -spec length(seq()) -> integer().
 length(Seq) -> erlang:length(Seq).
 

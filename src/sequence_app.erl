@@ -6,7 +6,7 @@ start() ->
                         [{port, 8081},
                          {listen, {0, 0, 0, 0}},
                          {appmods, [{"/", sg_appmod}]}]),
-    sequence_server:start().
+    sequence_server:start_link().
 
 stop() ->
     yaws:stop(),

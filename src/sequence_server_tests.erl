@@ -15,7 +15,7 @@ put_test_() ->
      ]}.
 
 setup() ->
-    sequence_server:start().
+    sequence_server:start_link().
 
 cleanup(_) ->
     sequence_server:stop().
