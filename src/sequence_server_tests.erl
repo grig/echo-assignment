@@ -103,3 +103,14 @@ multi_server_should_register_subsequences() ->
     sequence_server:register(1),
     sequence_server:register(2),
     ?assertEqual([[1,2], [1]], sequence_server:get_multi()).
+
+should_be_able_to_register_3_sequences_test() ->
+    sequence_server:start_link([{max_sequences, 3}]),
+    sequence_server:register(20),
+    sequence_server:register(21),
+    sequence_server:register(10),
+    sequence_server:register(11),
+    sequence_server:register(1),
+    sequence_server:register(2),
+    ?assertEqual([[1,2], [10, 11], [20,21]], sequence_server:get_multi()),
+    sequence_server:stop().

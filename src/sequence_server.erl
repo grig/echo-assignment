@@ -70,6 +70,17 @@ update_longest_sequences({Longest, NextLongest}, Current) ->
                  true -> { Longest, Current};
                  _ -> { Longest, NextLongest}
              end
+    end;
+update_longest_sequences({Longest, NextLongest, NextNextLongest}, Current) ->
+    case sequence:length(Current) >= sequence:length(Longest) of
+        true -> {Current, Longest, NextLongest};
+        _ -> case sequence:length(Current) >= sequence:length(NextLongest) of
+                 true -> { Longest, Current, NextLongest};
+                 _ -> case sequence:length(Current) >= sequence:length(NextNextLongest) of
+                          true -> { Longest, NextLongest, Current};
+                          _ -> {Longest, NextLongest, NextNextLongest}
+                      end
+             end
     end.
 
 sequences_to_list({Longest, NextLongest}) ->
@@ -77,6 +88,13 @@ sequences_to_list({Longest, NextLongest}) ->
         {[], []}  -> [];
         {Seq, []} -> [sequence:to_list(Seq)];
         {Seq, Seq2} -> [sequence:to_list(Seq), sequence:to_list(Seq2)]
+    end;
+sequences_to_list({Longest, NextLongest, NextNextLongest}) ->
+    case {Longest, NextLongest, NextNextLongest} of
+        {[], [], []}  -> [];
+        {Seq, [], []} -> [sequence:to_list(Seq)];
+        {Seq, Seq2, []} -> [sequence:to_list(Seq), sequence:to_list(Seq2)];
+        {Seq, Seq2, Seq3} -> [sequence:to_list(Seq), sequence:to_list(Seq2), sequence:to_list(Seq3)]
     end.
 
 handle_cast(_Request, State) ->
