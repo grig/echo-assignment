@@ -36,18 +36,19 @@ set_conf(_Config) ->
 
 % gen_server callbacks
 init(_Arg) ->
-    {ok, {{sequence:new(),sequence:new()}, sequence:new()}}.
+    {ok, {sequences_new(2), sequence:new()}}.
 
 handle_call({register, Num}, _From, State) ->
     {reply, ok, update_state(Num, State)};
-handle_call(get, _From, State = { {Longest, _NextLongest}, _Current }) ->
-    {reply, sequence:to_list(Longest), State};
-handle_call(get_multi, _From, State = { {Longest, NextLongest}, _Current }) ->
-    case {Longest, NextLongest} of
-        {[], []}  -> {reply, [], State};
-        {Seq, []} -> {reply, [sequence:to_list(Seq)], State};
-        {Seq, Seq2} -> {reply, [sequence:to_list(Seq), sequence:to_list(Seq2)], State}
-    end;
+handle_call(get, _From, State = { Sequences, _Current }) ->
+    Longest = case sequences_to_list(Sequences) of
+                  [] -> [];
+                  [H|_T] -> H
+              end,
+    {reply, Longest, State};
+handle_call(get_multi, _From, State = { Sequences, _Current }) ->
+    SequenceLists = sequences_to_list(Sequences),
+    {reply, SequenceLists, State};
 handle_call(stop, _From, State) ->
     {stop, normal, ok, State}.
 
@@ -63,6 +64,17 @@ update_longest_sequences({Longest, NextLongest}, Current) ->
                  true -> { Longest, Current};
                  _ -> { Longest, NextLongest}
              end
+    end.
+
+sequences_new(2) ->
+    L = [sequence:new(), sequence:new()],
+    list_to_tuple(L).
+
+sequences_to_list({Longest, NextLongest}) ->
+    case {Longest, NextLongest} of
+        {[], []}  -> [];
+        {Seq, []} -> [sequence:to_list(Seq)];
+        {Seq, Seq2} -> [sequence:to_list(Seq), sequence:to_list(Seq2)]
     end.
 
 handle_cast(_Request, State) ->
