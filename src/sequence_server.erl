@@ -7,11 +7,11 @@
 
 % API
 start_link() ->
-    gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
+    gen_server:start_link({local, ?MODULE}, ?MODULE, 2, []).
 
 -spec start_link(config()) -> ok.
-start_link([{max_sequences, _N}]) ->
-    start_link().
+start_link([{max_sequences, N}]) ->
+    gen_server:start_link({local, ?MODULE}, ?MODULE, N, []).
 
 -spec(stop() -> ok).
 stop() ->
@@ -35,8 +35,8 @@ set_conf(_Config) ->
     ok.
 
 % gen_server callbacks
-init(_Arg) ->
-    {ok, {sequences_new(2), sequence:new()}}.
+init(MaxSequences) ->
+    {ok, {sequences_new(MaxSequences), sequence:new()}}.
 
 handle_call({register, Num}, _From, State) ->
     {reply, ok, update_state(Num, State)};
@@ -57,6 +57,12 @@ update_state(Num, {Sequences, Current}) ->
     Sequences1 = update_longest_sequences(Sequences, Current1),
     {Sequences1, Current1}.
 
+sequences_new(N) ->
+    list_to_tuple(sequences_new1(N)).
+
+sequences_new1(0) -> [];
+sequences_new1(N) -> [sequence:new() | sequences_new1(N - 1) ].
+
 update_longest_sequences({Longest, NextLongest}, Current) ->
     case sequence:length(Current) >= sequence:length(Longest) of
         true -> {Current, Longest};
@@ -65,10 +71,6 @@ update_longest_sequences({Longest, NextLongest}, Current) ->
                  _ -> { Longest, NextLongest}
              end
     end.
-
-sequences_new(2) ->
-    L = [sequence:new(), sequence:new()],
-    list_to_tuple(L).
 
 sequences_to_list({Longest, NextLongest}) ->
     case {Longest, NextLongest} of
