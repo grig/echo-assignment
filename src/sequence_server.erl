@@ -63,25 +63,20 @@ sequences_new(N) ->
 sequences_new1(0) -> [];
 sequences_new1(N) -> [sequence:new() | sequences_new1(N - 1) ].
 
-update_longest_sequences({Longest, NextLongest}, Current) ->
-    case sequence:length(Current) >= sequence:length(Longest) of
-        true -> {Current, Longest};
-        _ -> case sequence:length(Current) >= sequence:length(NextLongest) of
-                 true -> { Longest, Current};
-                 _ -> { Longest, NextLongest}
-             end
-    end;
-update_longest_sequences({Longest, NextLongest, NextNextLongest}, Current) ->
-    case sequence:length(Current) >= sequence:length(Longest) of
-        true -> {Current, Longest, NextLongest};
-        _ -> case sequence:length(Current) >= sequence:length(NextLongest) of
-                 true -> { Longest, Current, NextLongest};
-                 _ -> case sequence:length(Current) >= sequence:length(NextNextLongest) of
-                          true -> { Longest, NextLongest, Current};
-                          _ -> {Longest, NextLongest, NextNextLongest}
-                      end
-             end
+
+update_longest_sequences(Sequences, Current) ->
+    L = tuple_to_list(Sequences),
+    L1 = update_longest_sequences1(L, Current),
+    list_to_tuple(L1).
+
+update_longest_sequences1([], _Current) -> [];
+update_longest_sequences1(L = [H|T], Current) ->
+    case sequence:length(Current) >= sequence:length(H) of
+        true -> [ Current | chomp(L)];
+        _ -> [ H | update_longest_sequences1(T, Current)]
     end.
+
+chomp(L) -> lists:sublist(L, length(L) - 1).
 
 sequences_to_list(S) ->
     L = tuple_to_list(S),
