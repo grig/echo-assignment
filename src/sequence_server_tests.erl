@@ -11,7 +11,10 @@ put_test_() ->
       fun should_return_sequential_elements/0,
       fun should_reset_sequence_for_out_of_order_elements/0,
       fun should_return_largest_sequence_so_far/0,
-      sequence
+      fun should_allow_to_reconfigure_itself/0,
+      fun should_configure_max_sequences/0,
+      sequence,
+      seq_conf
      ]}.
 
 setup() ->
@@ -48,3 +51,12 @@ should_return_largest_sequence_so_far() ->
     sequence_server:register(1),
     sequence_server:register(2),
     ?assertEqual([1,2,3], sequence_server:get()).
+
+should_allow_to_reconfigure_itself() ->
+    ?assertMatch(ok, sequence_server:set_conf([{max_sequences, 5}])).
+
+should_configure_max_sequences() ->
+    ok = sequence_server:set_conf([{max_sequences, 5}]),
+    sequence_server:register(2),
+    sequence_server:register(1),
+    ?assertEqual([[1], [2]], sequence_server:get_multi()).

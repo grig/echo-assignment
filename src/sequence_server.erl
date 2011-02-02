@@ -21,6 +21,15 @@ register(Val) ->
 get() ->
     gen_server:call(?MODULE, get).
 
+get_multi() ->
+    [?MODULE:get()].
+
+-spec(set_conf(config()) -> ok).
+-type config() :: [config_item()].
+-type config_item() :: {atom(), term()}.
+set_conf(_Config) ->
+    ok.
+
 % gen_server callbacks
 init(_Arg) ->
     {ok, {sequence:new(), sequence:new()}}.

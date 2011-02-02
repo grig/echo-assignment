@@ -2,6 +2,9 @@ Feature: putting a number
   As a generator
   I want to be able to post a generated number to the server
 
+  Background:
+    Given a running sequence server
+
   Scenario Outline: /put examples
     When I post string "<input>" as "<content_type>" to "/put"
     Then I should receive HTTP status line "<status>"

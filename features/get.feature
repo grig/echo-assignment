@@ -1,9 +1,9 @@
-Feature: getting lists of sequences
+Feature: getting a single sequences
   As a client
-  I want to be able to read uploaded sequences
+  I want to be able to read largest uploaded sequence
 
   Background:
-    #    Given a running sequence server
+    Given a running sequence server
 
   Scenario: empty get request
     When I send a GET request to "/get"
