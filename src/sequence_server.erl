@@ -83,19 +83,12 @@ update_longest_sequences({Longest, NextLongest, NextNextLongest}, Current) ->
              end
     end.
 
-sequences_to_list({Longest, NextLongest}) ->
-    case {Longest, NextLongest} of
-        {[], []}  -> [];
-        {Seq, []} -> [sequence:to_list(Seq)];
-        {Seq, Seq2} -> [sequence:to_list(Seq), sequence:to_list(Seq2)]
-    end;
-sequences_to_list({Longest, NextLongest, NextNextLongest}) ->
-    case {Longest, NextLongest, NextNextLongest} of
-        {[], [], []}  -> [];
-        {Seq, [], []} -> [sequence:to_list(Seq)];
-        {Seq, Seq2, []} -> [sequence:to_list(Seq), sequence:to_list(Seq2)];
-        {Seq, Seq2, Seq3} -> [sequence:to_list(Seq), sequence:to_list(Seq2), sequence:to_list(Seq3)]
-    end.
+sequences_to_list(S = {_Longest, _NextLongest}) ->
+    L = tuple_to_list(S),
+    lists:map(fun sequence:to_list/1, lists:filter(fun(X) -> X =/= [] end, L));
+sequences_to_list(S = {_Longest, _NextLongest, _NextNextLongest}) ->
+    L = tuple_to_list(S),
+    lists:map(fun sequence:to_list/1, lists:filter(fun(X) -> X =/= [] end, L)).
 
 handle_cast(_Request, State) ->
     {noreply, State}.
