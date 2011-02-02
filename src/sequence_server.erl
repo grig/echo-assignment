@@ -7,7 +7,7 @@
 
 % API
 start_link() ->
-    gen_server:start_link({local, ?MODULE}, ?MODULE, 2, []).
+    gen_server:start_link({local, ?MODULE}, ?MODULE, 1, []).
 
 -spec start_link(config()) -> ok.
 start_link([{max_sequences, N}]) ->
@@ -57,30 +57,20 @@ update_state(Num, {Sequences, Current}) ->
     Sequences1 = update_longest_sequences(Sequences, Current1),
     {Sequences1, Current1}.
 
-sequences_new(N) ->
-    list_to_tuple(sequences_new1(N)).
+sequences_new(0) -> [];
+sequences_new(N) -> [sequence:new() | sequences_new(N - 1) ].
 
-sequences_new1(0) -> [];
-sequences_new1(N) -> [sequence:new() | sequences_new1(N - 1) ].
-
-
-update_longest_sequences(Sequences, Current) ->
-    L = tuple_to_list(Sequences),
-    L1 = update_longest_sequences1(L, Current),
-    list_to_tuple(L1).
-
-update_longest_sequences1([], _Current) -> [];
-update_longest_sequences1(L = [H|T], Current) ->
+update_longest_sequences([], _Current) -> [];
+update_longest_sequences(L = [H|T], Current) ->
     case sequence:length(Current) >= sequence:length(H) of
-        true -> [ Current | chomp(L)];
-        _ -> [ H | update_longest_sequences1(T, Current)]
+        true -> [ Current | truncate(L)];
+        _ -> [ H | update_longest_sequences(T, Current)]
     end.
 
-chomp(L) -> lists:sublist(L, length(L) - 1).
+truncate(L) -> lists:sublist(L, length(L) - 1).
 
-sequences_to_list(S) ->
-    L = tuple_to_list(S),
-    lists:map(fun sequence:to_list/1, lists:filter(fun(X) -> X =/= [] end, L)).
+sequences_to_list(Sequences) ->
+    lists:map(fun sequence:to_list/1, lists:filter(fun(X) -> X =/= [] end, Sequences)).
 
 handle_cast(_Request, State) ->
     {noreply, State}.
