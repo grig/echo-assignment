@@ -51,16 +51,19 @@ handle_call(get_multi, _From, State = { {Longest, NextLongest}, _Current }) ->
 handle_call(stop, _From, State) ->
     {stop, normal, ok, State}.
 
-update_state(Num, {{Longest, NextLongest}, Current}) ->
+update_state(Num, {Sequences, Current}) ->
     Current1 = sequence:insert(Num, Current),
-    {Longest1,NextLongest1} = case sequence:length(Longest) =< sequence:length(Current1) of
-                   true -> {Current1, NextLongest};
-                   _ -> case sequence:length(NextLongest) =< sequence:length(Current1) of
-                            true -> { Longest, Current1};
-                            _ -> { Longest, NextLongest}
-                        end
-                              end,
-    {{Longest1, NextLongest1}, Current1}.
+    Sequences1 = update_longest_sequences(Sequences, Current1),
+    {Sequences1, Current1}.
+
+update_longest_sequences({Longest, NextLongest}, Current) ->
+    case sequence:length(Longest) =< sequence:length(Current) of
+        true -> {Current, NextLongest};
+        _ -> case sequence:length(NextLongest) =< sequence:length(Current) of
+                 true -> { Longest, Current};
+                 _ -> { Longest, NextLongest}
+             end
+    end.
 
 handle_cast(_Request, State) ->
     {noreply, State}.
