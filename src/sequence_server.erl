@@ -83,10 +83,7 @@ update_longest_sequences({Longest, NextLongest, NextNextLongest}, Current) ->
              end
     end.
 
-sequences_to_list(S = {_Longest, _NextLongest}) ->
-    L = tuple_to_list(S),
-    lists:map(fun sequence:to_list/1, lists:filter(fun(X) -> X =/= [] end, L));
-sequences_to_list(S = {_Longest, _NextLongest, _NextNextLongest}) ->
+sequences_to_list(S) ->
     L = tuple_to_list(S),
     lists:map(fun sequence:to_list/1, lists:filter(fun(X) -> X =/= [] end, L)).
 
