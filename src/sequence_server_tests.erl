@@ -24,7 +24,9 @@ multi_test_() ->
      fun cleanup/1,
      [fun multi_server_should_return_empty_list_on_no_sequences/0,
       fun multi_server_should_return_single_sequence_when_only_one_sequence/0,
-      fun multi_server_should_return_two_sequence_when_both_present/0
+      fun multi_server_should_return_two_sequence_when_both_present/0,
+      fun multi_server_should_register_subsequences/0,
+      fun multi_server_should_handle_largest_sequence_correctly/0
      ]}.
 
 setup_multi() ->
@@ -87,3 +89,17 @@ multi_server_should_return_two_sequence_when_both_present() ->
     sequence_server:register(3),
     sequence_server:register(1),
     ?assertEqual([[2,3],[1]], sequence_server:get_multi()).
+
+multi_server_should_handle_largest_sequence_correctly() ->
+    sequence_server:register(10),
+    sequence_server:register(11),
+    sequence_server:register(12),
+    sequence_server:register(1),
+    sequence_server:register(2),
+    sequence_server:register(3),
+    ?assertEqual([[1,2,3],[10,11,12]], sequence_server:get_multi()).
+
+multi_server_should_register_subsequences() ->
+    sequence_server:register(1),
+    sequence_server:register(2),
+    ?assertEqual([[1,2], [1]], sequence_server:get_multi()).

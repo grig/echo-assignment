@@ -57,9 +57,9 @@ update_state(Num, {Sequences, Current}) ->
     {Sequences1, Current1}.
 
 update_longest_sequences({Longest, NextLongest}, Current) ->
-    case sequence:length(Longest) =< sequence:length(Current) of
-        true -> {Current, NextLongest};
-        _ -> case sequence:length(NextLongest) =< sequence:length(Current) of
+    case sequence:length(Current) >= sequence:length(Longest) of
+        true -> {Current, Longest};
+        _ -> case sequence:length(Current) >= sequence:length(NextLongest) of
                  true -> { Longest, Current};
                  _ -> { Longest, NextLongest}
              end
