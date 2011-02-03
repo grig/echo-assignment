@@ -74,8 +74,7 @@ should_configure_max_sequences() ->
     ok = sequence_server:set_conf([{max_sequences, 5}]),
     sequence_server:register(2),
     sequence_server:register(1),
-    ok. % WIP
-%    ?assertEqual([[1], [2]], sequence_server:get_multi()).
+    ?assertEqual([[1], [2]], sequence_server:get_multi()).
 
 multi_server_should_return_empty_list_on_no_sequences() ->
     ?assertEqual([], sequence_server:get_multi()).
