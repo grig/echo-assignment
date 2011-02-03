@@ -11,10 +11,18 @@ start(ConfigFile) ->
     start(Port, MaxSequences).
 
 start(Port, MaxSequences) ->
-    {ok, Cwd} = file:get_cwd(),
-    seq_yaws:start(Cwd, Port),
-    sequence_server_sup:start_link([{max_sequences, MaxSequences}]).
+    Pid = spawn(fun() ->
+                        sequence_sup:start_link(Port, MaxSequences),
+                        loop()
+                end),
+    register(sequence_app, Pid).
+
+loop() ->
+    receive
+        stop -> io:format("stopping~n");
+        Msg -> io:format("sequence_app:start received ~p~n", [Msg]),
+               loop()
+    end.
 
 stop() ->
-    yaws:stop(),
-    sequence_server:stop().
+    sequence_app ! stop.

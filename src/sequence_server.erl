@@ -31,9 +31,7 @@ get_sequences() ->
 -type config() :: [config_item()].
 -type config_item() :: {atom(), term()}.
 set_conf(Config) ->
-    stop(),
-    start_link(Config),
-    ok.
+    gen_server:call(?MODULE, {set_conf, Config}).
 
 % gen_server callbacks
 init(MaxSequences) ->
@@ -46,7 +44,10 @@ handle_call({register, Num}, _From, State = { Sequences, Current}) ->
 handle_call(get_sequences, _From, State = { Sequences, _Current }) ->
     {reply, seq_cache:values(Sequences), State};
 handle_call(stop, _From, State) ->
-    {stop, normal, ok, State}.
+    {stop, normal, ok, State};
+handle_call({set_conf, [{max_sequences, MaxSequences}]}, _From, _State) ->
+    State = {seq_cache:new(MaxSequences), sequence:new()},
+    {reply, ok, State}.
 
 handle_cast(_Request, State) ->
     {noreply, State}.
