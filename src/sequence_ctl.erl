@@ -6,7 +6,7 @@
 start_app() ->
   {ok, Hostname} = inet:gethostname(),
   Node = list_to_atom("cucumber@"++Hostname),
-  spawn(Node, fun() -> sequence_app:start() end),
+  spawn(Node, fun() -> application:start(sequence_app) end),
   init:stop().
 
 stop_app() ->

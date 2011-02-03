@@ -4,7 +4,9 @@ YAWS_EBIN=${YAWS_HOME}/ebin
 all: test
 
 compile:
+	test -d ebin || mkdir ebin
 	erlc -o ebin/ src/*.erl
+	cp src/sequence_app.app ebin
 
 unit-test: compile
 	erl -pa ebin -noshell -eval 'eunit:test(sequence_server), init:stop().'
