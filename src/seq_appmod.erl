@@ -40,6 +40,7 @@ decode_input(Data) ->
 % handles requests to "/get" URI
 handle_get(_A) ->
     [{status, 200},
+     {header, "Content-Type: text/json"},
      {html,
       io_lib:format("~p", [sequence_server:get_sequences()])}].
 
