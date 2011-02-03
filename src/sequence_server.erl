@@ -40,41 +40,26 @@ set_conf(Config) ->
 
 % gen_server callbacks
 init(MaxSequences) ->
-    {ok, {sequences_new(MaxSequences), sequence:new()}}.
+    {ok, {seq_cache:new(MaxSequences), sequence:new()}}.
 
 handle_call({register, Num}, _From, State) ->
     {reply, ok, update_state(Num, State)};
 handle_call(get, _From, State = { Sequences, _Current }) ->
-    Longest = case sequences_to_list(Sequences) of
+    Longest = case seq_cache:values(Sequences) of
                   [] -> [];
                   [H|_T] -> H
               end,
     {reply, Longest, State};
 handle_call(get_multi, _From, State = { Sequences, _Current }) ->
-    SequenceLists = sequences_to_list(Sequences),
+    SequenceLists = seq_cache:values(Sequences),
     {reply, SequenceLists, State};
 handle_call(stop, _From, State) ->
     {stop, normal, ok, State}.
 
 update_state(Num, {Sequences, Current}) ->
     Current1 = sequence:insert(Num, Current),
-    Sequences1 = update_longest_sequences(Sequences, Current1),
+    Sequences1 = seq_cache:insert(Sequences, Current1),
     {Sequences1, Current1}.
-
-sequences_new(0) -> [];
-sequences_new(N) -> [sequence:new() | sequences_new(N - 1) ].
-
-update_longest_sequences([], _Current) -> [];
-update_longest_sequences(L = [H|T], Current) ->
-    case sequence:length(Current) >= sequence:length(H) of
-        true -> [ Current | truncate(L)];
-        _ -> [ H | update_longest_sequences(T, Current)]
-    end.
-
-truncate(L) -> lists:sublist(L, length(L) - 1).
-
-sequences_to_list(Sequences) ->
-    lists:map(fun sequence:to_list/1, lists:filter(fun(X) -> X =/= [] end, Sequences)).
 
 handle_cast(_Request, State) ->
     {noreply, State}.
