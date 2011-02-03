@@ -1,11 +1,11 @@
-YAWS_HOME=/Users/grig/local/yaws/lib/yaws
 YAWS_EBIN=${YAWS_HOME}/ebin
+YAWS_INCLUDE=${YAWS_HOME}/include
 
 all: compile
 
 compile:
 	test -d ebin || mkdir ebin
-	erlc -I "${YAWS_HOME}/include" -o ebin/ src/*.erl
+	erlc -I "${YAWS_INCLUDE}" -o ebin/ src/*.erl
 	cp src/sequence_app.app ebin
 
 unit-test: compile
