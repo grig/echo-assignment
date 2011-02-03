@@ -1,7 +1,7 @@
 YAWS_HOME=/Users/grig/local/yaws/lib/yaws
 YAWS_EBIN=${YAWS_HOME}/ebin
 
-all: test
+all: compile
 
 compile:
 	test -d ebin || mkdir ebin
