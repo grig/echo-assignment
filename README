@@ -1,0 +1,102 @@
+SEQUENCE SERVER
+
+Extracts monotonically increasing sequences of numbers it receives via
+a HTTP API. Provides a way to read some number of largest sequences,
+also via HTTP API.
+
+PREREQUISITES
+
+- yaws
+- erlang
+- make
+- (optional) ruby and "cucumber" gem for running tests
+
+BUILDING
+
+First, set YAWS_HOME environment variable to yaws installation directory:
+
+  $ export YAWS_HOME=/opt/local/lib/yaws
+
+Then, run make:
+
+  $ make
+
+To ensure that everything works ok, run the tests:
+
+  $ make test
+
+RUNNING
+
+  $ ./bin/sequence_server [path/to/sequence_server.config]
+
+Configuration file allows to specify a port the server listens on and
+maximum number of sequences to keep. See example in
+doc/sequence_server.config for details.
+
+API
+
+Server provides the following HTTP API:
+
+1. register a new number:
+# Client->Server
+  POST /put HTTP/1.1
+  Host: localhost
+  Content-Type: text/plain
+  Content-Length: <...>
+
+  <number>
+
+server returns one of the following statuses:
+- "204 No Content" -- OK
+- "400 Bad Request" -- Failed to parse requests (for instance, wrong number format)
+- "5xx" -- Internal server error
+
+2. Get the list of largest sequences
+# Client -> Server
+  GET /get HTTP/1.1
+  Host: localhost
+
+# Server -> Client
+  HTTP/1.1 200 OK
+  Content-Type: text/json
+
+  [[1,2,3], [4,5,6]]
+
+Server returns JSON-encoded array of arrays, each nested array
+representing one stored sequence.
+
+See features/get.feature and features/put.feature for more examples
+
+APPLICATION STRUCTURE
+
+Main modules:
+
+- sequence_server.erl -- manages current server state -- that is, a
+  set of largest sequences and a current sequence;
+
+- sequence.erl -- provides an API to work with individual
+  monotonically increasing sequences
+
+- seq_cache.erl -- provides a "cache" of a fixed number of largest
+  sequences met so far
+
+- seq_appmod.erl -- provides HTTP API
+
+Auxillary modules:
+
+- sequence_app.erl -- controls application startup and configuration,
+
+- *_sup.erl -- supervisors
+
+- seq_yaws.erl -- yaws embedding code
+
+- sequence_ctl.erl -- some helpers used by tests to control server
+  state
+
+Tests:
+
+- src/*_tests.erl -- eUnit tests
+
+- features/*.feature -- some acceptance tests. Require cucumber
+  (http://cukes.info/) to run.
+
