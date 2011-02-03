@@ -5,7 +5,7 @@ all: test
 
 compile:
 	test -d ebin || mkdir ebin
-	erlc -o ebin/ src/*.erl
+	erlc -I "${YAWS_HOME}/include" -o ebin/ src/*.erl
 	cp src/sequence_app.app ebin
 
 unit-test: compile

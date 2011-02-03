@@ -1,5 +1,5 @@
--module(sg_appmod).
--include("/Users/grig/local/yaws/lib/yaws/include/yaws_api.hrl").
+-module(seq_appmod).
+-include("yaws_api.hrl").
 -export([out/1]).
 
 out(A) ->
