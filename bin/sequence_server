@@ -8,8 +8,8 @@ fi
 EBIN="$SEQUENCE_SERVER_HOME/ebin"
 ERLOPTS="-pa $EBIN"
 
-if [ ! -z $YAWS_LIB ]; then
-	ERLOPTS="$ERLOPTS -pa $YAWS_LIB/ebin";
+if [ ! -z $YAWS_HOME ]; then
+	ERLOPTS="$ERLOPTS -pa $YAWS_HOME/ebin";
 fi
 
 function usage() {
