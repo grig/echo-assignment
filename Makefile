@@ -3,15 +3,19 @@ YAWS_INCLUDE=${YAWS_HOME}/include
 
 all: compile
 
-compile:
+ebin: 
 	test -d ebin || mkdir ebin
+
+compile: ebin src/*.erl
 	erlc -I "${YAWS_INCLUDE}" -o ebin/ src/*.erl
 	cp src/sequence_app.app ebin
 
-unit-test: compile
+tmp: 
+	test -d tmp || mkdir tmp
+unit-test: compile tmp
 	erl -pa ebin -noshell -eval 'eunit:test(sequence_server), init:stop().'
 
-acceptance-test: compile
+acceptance-test: compile tmp
 	cucumber
 
 test: unit-test acceptance-test
