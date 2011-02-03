@@ -33,9 +33,9 @@ get_multi() ->
 -type config_item() :: {atom(), term()}.
 %% Reconfigures sequence_server using given configuration
 %% TODO: graceful reconfigurations
-set_conf(_Config) ->
+set_conf(Config) ->
     stop(),
-    start_link(_Config),
+    start_link(Config),
     ok.
 
 % gen_server callbacks

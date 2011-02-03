@@ -113,3 +113,13 @@ should_be_able_to_register_3_sequences_test() ->
     sequence_server:register(2),
     ?assertEqual([[1,2], [10, 11], [20,21]], sequence_server:get_multi()),
     sequence_server:stop().
+
+should_be_able_to_register_5_sequences_test() ->
+    sequence_server:start_link([{max_sequences, 5}]),
+    sequence_server:register(5),
+    sequence_server:register(4),
+    sequence_server:register(3),
+    sequence_server:register(2),
+    sequence_server:register(1),
+    ?assertEqual([[1], [2], [3], [4], [5]], sequence_server:get_multi()),
+    sequence_server:stop().

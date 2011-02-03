@@ -9,6 +9,7 @@ out(A) ->
         _     -> handle_not_found()
     end.
 
+% handles requests to "/put" URIs
 handle_put(A) ->
     case decode_request(A) of
         {ok, _Val} ->
@@ -36,11 +37,13 @@ decode_input(Data) ->
         error:badarg -> error
     end.
 
+% handles requests to "/get" URI
 handle_get(_A) ->
     [{status, 200},
      {html,
-      io_lib:format("[~p]", [sequence_server:get()])}].
+      io_lib:format("~p", [sequence_server:get_multi()])}].
 
+% handles other requests
 handle_not_found() ->
     [{status, 404},
      {html, "Not Found"}].

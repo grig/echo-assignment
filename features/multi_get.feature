@@ -6,7 +6,7 @@ Feature: getting N largest sequences
   Scenario:
     Given a sequence server with a following configuration:
     """
-      {max_sequences, 5}.
+      [{max_sequences, 5}].
     """
     When I post string "5" as "text/plain" to "/put"
     And I post string "4" as "text/plain" to "/put"
