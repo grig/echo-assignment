@@ -16,7 +16,7 @@ start(Port, MaxSequences) ->
                         [{port, Port},
                          {listen, {0, 0, 0, 0}},
                          {appmods, [{"/", sg_appmod}]}]),
-    sequence_server:start_link([{max_sequences, MaxSequences}]).
+    sequence_server_sup:start_link([{max_sequences, MaxSequences}]).
 
 stop() ->
     yaws:stop(),

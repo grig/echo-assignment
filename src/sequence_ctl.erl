@@ -18,7 +18,7 @@ stop_app() ->
 start_server() ->
   {ok, Hostname} = inet:gethostname(),
   Node = list_to_atom("cucumber@"++Hostname),
-  spawn_link(Node, fun() -> sequence_server:start_link() end),
+  spawn_link(Node, fun() -> sequence_server:start_link([{max_sequences, 1}]) end),
   init:stop().
 
 stop_server() ->

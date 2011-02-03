@@ -5,11 +5,6 @@
 % gen_server exports
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
-% API
-%% starts the server
-start_link() ->
-    gen_server:start_link({local, ?MODULE}, ?MODULE, 1, []).
-
 %% starts the server with a given configuration
 -spec start_link(config()) -> ok.
 start_link([{max_sequences, N}]) ->

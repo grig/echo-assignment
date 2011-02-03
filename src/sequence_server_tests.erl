@@ -37,7 +37,7 @@ setup_multi() ->
     sequence_server:start_link([{max_sequences, 2}]).
 
 setup() ->
-    sequence_server:start_link().
+    sequence_server:start_link([{max_sequences, 1}]).
 
 cleanup(_) ->
     sequence_server:stop().
