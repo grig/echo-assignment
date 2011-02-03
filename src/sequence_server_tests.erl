@@ -1,6 +1,10 @@
 -module(sequence_server_tests).
 -include_lib("eunit/include/eunit.hrl").
 
+%%% TODO: most of these tests should be moved to either sequence_tests
+%%% or seq_cache_tests. To do that, however, we need to ensure that
+%%% sequence_server calls these modules' respected methods.
+
 put_test_() ->
     [{foreach,
       fun setup/0,
@@ -42,22 +46,24 @@ should_register_value() ->
     ok = sequence_server:register(1).
 
 should_return_empty_list_on_empty_sequence() ->
-    ?assertEqual([], sequence_server:get()).
+    L1 = sequence_server:get_multi(),
+    ?assertEqual([], L1).
 
 should_return_single_element() ->
     sequence_server:register(1),
-    ?assertEqual([1], sequence_server:get()).
+    L1 = sequence_server:get_multi(),
+    ?assertEqual([[1]], L1).
 
 should_return_sequential_elements() ->
     sequence_server:register(1),
     sequence_server:register(2),
-    ?assertEqual([1,2], sequence_server:get()).
+    ?assertEqual([[1,2]], sequence_server:get_multi()).
 
 should_reset_sequence_for_out_of_order_elements() ->
     sequence_server:register(2),
     sequence_server:register(1),
     sequence_server:register(2),
-    ?assertEqual([1,2], sequence_server:get()).
+    ?assertEqual([[1,2]], sequence_server:get_multi()).
 
 should_return_largest_sequence_so_far() ->
     sequence_server:register(1),
@@ -65,7 +71,7 @@ should_return_largest_sequence_so_far() ->
     sequence_server:register(3),
     sequence_server:register(1),
     sequence_server:register(2),
-    ?assertEqual([1,2,3], sequence_server:get()).
+    ?assertEqual([[1,2,3]], sequence_server:get_multi()).
 
 should_allow_to_reconfigure_itself() ->
     ?assertMatch(ok, sequence_server:set_conf([{max_sequences, 5}])).
