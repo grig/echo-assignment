@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -e
+
+if [ -z $SEQUENCE_SERVER_HOME ]; then
+	SEQUENCE_SERVER_HOME="`dirname $0`/..";
+fi
+EBIN="$SEQUENCE_SERVER_HOME/ebin"
+ERLOPTS="-pa $EBIN"
+
+if [ ! -z $YAWS_LIB ]; then
+	ERLOPTS="$ERLOPTS -pa $YAWS_LIB/ebin";
+fi
+
+function usage() {
+	echo "USAGE: sequence_server [options] [config_file]"
+	echo ""
+	echo "OPTIONS"
+	echo "\t-h,--help\tOutput this help message"
+	exit 1
+}
+
+ERL=erl
+ERLOPTS="$ERLOPTS -noshell"
+while true; do
+	case $1 in
+		"-h"|"--help") usage;;
+		"-*") echo "Unrecognized option: $1"; usage;;
+		*) CONFIG="start $1"; break;;
+	esac
+	shift
+done
+
+erl $ERLOPTS -s sequence_app $CONFIG
