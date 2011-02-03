@@ -37,7 +37,7 @@ set_conf(Config) ->
 init(MaxSequences) ->
     {ok, {seq_cache:new(MaxSequences), sequence:new()}}.
 
-handle_call({register, Num}, _From, State = { Sequences, Current}) ->
+handle_call({register, Num}, _From, {Sequences, Current}) ->
     Current1 = sequence:insert(Num, Current),
     Sequences1 = seq_cache:insert(Sequences, Current1),
     {reply, ok, {Sequences1, Current1}};
