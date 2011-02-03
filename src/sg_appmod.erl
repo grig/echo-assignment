@@ -41,7 +41,7 @@ decode_input(Data) ->
 handle_get(_A) ->
     [{status, 200},
      {html,
-      io_lib:format("~p", [sequence_server:get_multi()])}].
+      io_lib:format("~p", [sequence_server:get_sequences()])}].
 
 % handles other requests
 handle_not_found() ->

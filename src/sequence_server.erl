@@ -26,9 +26,9 @@ register(Val) ->
     gen_server:call(?MODULE, {register, Val}).
 
 %% returns contents of current sequence cache
--spec get_multi() -> [[integer()]].
-get_multi() ->
-    gen_server:call(?MODULE, get_multi).
+-spec get_sequences() -> [[integer()]].
+get_sequences() ->
+    gen_server:call(?MODULE, get_sequences).
 
 %% Reconfigures sequence_server using given configuration
 %% TODO: graceful reconfigurations
@@ -48,7 +48,7 @@ handle_call({register, Num}, _From, State = { Sequences, Current}) ->
     Current1 = sequence:insert(Num, Current),
     Sequences1 = seq_cache:insert(Sequences, Current1),
     {reply, ok, {Sequences1, Current1}};
-handle_call(get_multi, _From, State = { Sequences, _Current }) ->
+handle_call(get_sequences, _From, State = { Sequences, _Current }) ->
     {reply, seq_cache:values(Sequences), State};
 handle_call(stop, _From, State) ->
     {stop, normal, ok, State}.
