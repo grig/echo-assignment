@@ -12,10 +12,7 @@ start(ConfigFile) ->
 
 start(Port, MaxSequences) ->
     {ok, Cwd} = file:get_cwd(),
-    yaws:start_embedded(Cwd,
-                        [{port, Port},
-                         {listen, {0, 0, 0, 0}},
-                         {appmods, [{"/", sg_appmod}]}]),
+    seq_yaws:start(Cwd, Port),
     sequence_server_sup:start_link([{max_sequences, MaxSequences}]).
 
 stop() ->
