@@ -49,8 +49,8 @@ insert(L = [H|T], Current) ->
 %% returns stored sequences as list of list of integers
 -spec values(seq_cache()) -> [[integer()]].
 values(Sequences) ->
-    lists:map(fun sequence:to_list/1,
-              lists:filter(fun(X) -> X =/= [] end, Sequences)).
+    lists:filter(fun(X) -> X =/= [] end,
+                 lists:map(fun sequence:to_list/1, Sequences)).
 
 %%% helper: truncates the last element of the list
 truncate(L) -> lists:sublist(L, length(L) - 1).
