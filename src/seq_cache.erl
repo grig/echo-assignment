@@ -39,18 +39,24 @@ new(N) -> [sequence:new() | new(N - 1) ].
 %% inserts a new sequence in a sequence cache, evicting smaller
 %% sequences if needed.
 -spec insert(seq_cache(), sequence()) -> seq_cache().
-insert([], _Current) -> [];
-insert(L = [H|T], Current) ->
-    case sequence:length(Current) >= sequence:length(H) of
-        true -> [ Current | truncate(L)];
-        _ -> [ H | insert(T, Current)]
+insert(SC, Seq) ->
+    [Drop|T] = insert2(SC, Seq),
+    T.
+
+% X1 <= x2 <= ... <= x_n
+% s <= x1 -> [x1,x2,..., xn]
+% s <= x2 -> [s, x2, ..., xn]
+% s <= x3 -> [x2, s, x3, ..., xn]
+insert2([], S) -> [S];
+insert2(L=[H|T], S) ->
+    case sequence:length(S) < sequence:length(H) of
+             true -> [S|L];
+             _ -> [H|insert2(T, S)]
     end.
 
 %% returns stored sequences as list of list of integers
 -spec values(seq_cache()) -> [[integer()]].
 values(Sequences) ->
     lists:filter(fun(X) -> X =/= [] end,
-                 lists:map(fun sequence:to_list/1, Sequences)).
+                 lists:map(fun sequence:to_list/1, lists:reverse(Sequences))).
 
-%%% helper: truncates the last element of the list
-truncate(L) -> lists:sublist(L, length(L) - 1).
