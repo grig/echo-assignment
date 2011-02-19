@@ -20,7 +20,8 @@ start(_Type, _Args) ->
     {ok, Port} = application:get_env(?MODULE, port),
     {ok, MaxSequences} = application:get_env(?MODULE, max_sequences),
     error_logger:info_msg("sequence_app starting on port ~p, max_sequences=~p~n", [Port, MaxSequences]),
-    sequence_sup:start_link(Port, MaxSequences).
+    seq_yaws:start(Port),
+    sequence_sup:start_link(MaxSequences).
 
 stop(_State) ->
     ok.
