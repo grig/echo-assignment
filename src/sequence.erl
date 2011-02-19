@@ -1,5 +1,7 @@
 -module(sequence).
--compile(export_all).
+
+% API
+-export([new/0, length/1, insert/2, to_list/1]).
 
 -type seq() :: {integer(), [integer()]}.
 

@@ -1,7 +1,8 @@
 -module(sequence_ctl).
 % Stupid remote-control interface for sequence server
 
--compile(export_all).
+% API
+-export([start_app/0, stop_app/0, start_server/0, stop_server/0, reload/0]).
 
 start_app() ->
   ctl(fun() -> sequence_app:start() end),
