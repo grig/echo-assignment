@@ -42,7 +42,10 @@ handle_get(_A) ->
     [{status, 200},
      {header, "Content-Type: text/json"},
      {html,
-      io_lib:format("~p", [sequence_server:get_sequences()])}].
+       encode_output(sequence_server:get_sequences())}].
+
+encode_output(Sequences) ->
+  io_lib:format("~w", [Sequences]).
 
 % handles other requests
 handle_not_found() ->

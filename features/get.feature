@@ -35,3 +35,13 @@ Feature: getting a single sequences
       """
       [[1,3]]
       """
+
+	Scenario: numbers in ASCII printable range
+    Given I post string "49" as "text/plain" to "/put"
+    Given I post string "50" as "text/plain" to "/put"
+    Given I post string "51" as "text/plain" to "/put"
+    When I send a GET request to "/get"
+    Then response body should look like the following:
+      """
+      [[49,50,51]]
+      """
