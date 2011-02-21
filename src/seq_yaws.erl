@@ -6,7 +6,9 @@
 
 start(Port) ->
     {ok, Cwd} = file:get_cwd(),
-    SconfList = [{port, Port},
+    GConfList = [{flags, [{auth_log, false}]}],
+    SConfList = [{port, Port},
                  {listen, {0, 0, 0, 0}},
+		 {flags, [{access_log, false}]},
                  {appmods, [{"/", seq_appmod}]}],
-    ok = yaws:start_embedded(Cwd, SconfList).
+    ok = yaws:start_embedded(Cwd, SConfList, GConfList).
